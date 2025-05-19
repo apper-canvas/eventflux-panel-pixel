@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { motion } from 'framer-motion';
 import { getIcon } from './utils/iconUtils';
 import Home from './pages/Home';
+import CreateEvent from './pages/CreateEvent';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
       {/* Application Routes */}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/create-event" element={<CreateEvent />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 

@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { format, addDays } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 import { getIcon } from '../utils/iconUtils';
 
 const MainFeature = ({ onEventCreated, isCreatingEvent, setIsCreatingEvent }) => {
   // Event form state
   const [formCreatingState, setFormCreatingState] = useState(isCreatingEvent || false);
   const [formStep, setFormStep] = useState(1);
+  
+  const navigate = useNavigate();
   
   // Form data state
   const [eventData, setEventData] = useState({
@@ -101,17 +104,6 @@ const MainFeature = ({ onEventCreated, isCreatingEvent, setIsCreatingEvent }) =>
   };
   
   // Keyboard handling for modal
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape' && isCreatingEvent) {
-        setFormCreatingState(false);
-        setIsCreatingEvent(false);
-      }
-    };
-    
-    window.addEventListener('keydown', handleEscape); 
-    return () => window.removeEventListener('keydown', handleEscape);
-  }, [isCreatingEvent]);
   
   // Icons for the component
   const PlusIcon = getIcon('plus');
@@ -139,7 +131,7 @@ const MainFeature = ({ onEventCreated, isCreatingEvent, setIsCreatingEvent }) =>
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => setIsCreatingEvent(true)}
+          onClick={() => navigate('/create-event')}
           className="btn btn-primary px-5 py-2.5"
         >
           <PlusIcon className="w-5 h-5 mr-2" />
@@ -208,7 +200,7 @@ const MainFeature = ({ onEventCreated, isCreatingEvent, setIsCreatingEvent }) =>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setIsCreatingEvent(true)}
+                  onClick={() => navigate('/create-event')}
                   className="btn btn-primary mt-8"
                 >
                   <CalendarIcon className="w-5 h-5 mr-2" />
@@ -251,301 +243,6 @@ const MainFeature = ({ onEventCreated, isCreatingEvent, setIsCreatingEvent }) =>
           </div>
         </div>
       </div>
-      {/* Create Event Modal - using parent state via props */}
-      {/* Create Event Modal */}
-      <AnimatePresence>
-        {isCreatingEvent && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-surface-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setIsCreatingEvent(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ type: "spring", damping: 20 }}
-              className="bg-white dark:bg-surface-800 rounded-xl shadow-xl w-full max-w-2xl overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Modal Header */}
-              <div className="p-6 border-b border-surface-200 dark:border-surface-700">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-bold">
-                    {formStep === 1 ? "Create New Event - Basic Info" : "Create New Event - Date & Location"}
-                  </h3>
-                  <button
-                    onClick={() => setIsCreatingEvent(false)}
-                    className="p-1.5 rounded-full bg-surface-100 dark:bg-surface-700 hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors"
-                  >
-                    <XIcon className="w-5 h-5" />
-                  </button>
-                </div>
-                
-                {/* Progress indicator */}
-                <div className="flex items-center mt-6">
-                  <div className="flex-1">
-                    <div className="h-1.5 rounded-full bg-surface-200 dark:bg-surface-700 overflow-hidden">
-                      <motion.div 
-                        className="h-full rounded-full bg-primary"
-                        initial={{ width: '50%' }}
-                        animate={{ width: formStep === 1 ? '50%' : '100%' }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    </div>
-                  </div>
-                  <div className="w-12 text-center text-sm text-surface-500 dark:text-surface-400">
-                    {formStep}/2
-                  </div>
-                </div>
-              </div>
-              
-              {/* Modal Content */}
-              <form onSubmit={handleSubmit} className="p-6">
-                {formStep === 1 ? (
-                  <div className="space-y-4">
-                    <div>
-                      <label htmlFor="name" className="label">Event Name</label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={eventData.name}
-                        onChange={handleChange}
-                        placeholder="Enter event name"
-                        className={`input ${errors.name ? 'border-red-500 dark:border-red-500' : ''}`}
-                      />
-                      {errors.name && (
-                        <p className="mt-1 text-sm text-red-500">{errors.name}</p>
-                      )}
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="description" className="label">Event Description</label>
-                      <textarea
-                        id="description"
-                        name="description"
-                        value={eventData.description}
-                        onChange={handleChange}
-                        placeholder="Describe your event"
-                        rows="4"
-                        className={`input resize-none ${errors.description ? 'border-red-500 dark:border-red-500' : ''}`}
-                      ></textarea>
-                      {errors.description && (
-                        <p className="mt-1 text-sm text-red-500">{errors.description}</p>
-                      )}
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="eventType" className="label">Event Type</label>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
-                        <button
-                          type="button"
-                          onClick={() => setEventData(prev => ({ ...prev, eventType: 'conference' }))}
-                          className={`p-4 rounded-lg border ${
-                            eventData.eventType === 'conference' 
-                              ? 'border-primary bg-primary/10 dark:bg-primary/20' 
-                              : 'border-surface-200 dark:border-surface-700'
-                          } flex flex-col items-center justify-center gap-2 transition-colors`}
-                        >
-                          <BuildingIcon className={`w-6 h-6 ${
-                            eventData.eventType === 'conference' ? 'text-primary' : 'text-surface-500 dark:text-surface-400'
-                          }`} />
-                          <span className={eventData.eventType === 'conference' ? 'font-medium' : ''}>Conference</span>
-                        </button>
-                        
-                        <button
-                          type="button"
-                          onClick={() => setEventData(prev => ({ ...prev, eventType: 'webinar' }))}
-                          className={`p-4 rounded-lg border ${
-                            eventData.eventType === 'webinar' 
-                              ? 'border-primary bg-primary/10 dark:bg-primary/20' 
-                              : 'border-surface-200 dark:border-surface-700'
-                          } flex flex-col items-center justify-center gap-2 transition-colors`}
-                        >
-                          <VideoIcon className={`w-6 h-6 ${
-                            eventData.eventType === 'webinar' ? 'text-primary' : 'text-surface-500 dark:text-surface-400'
-                          }`} />
-                          <span className={eventData.eventType === 'webinar' ? 'font-medium' : ''}>Webinar</span>
-                        </button>
-                        
-                        <button
-                          type="button"
-                          onClick={() => setEventData(prev => ({ ...prev, eventType: 'workshop' }))}
-                          className={`p-4 rounded-lg border ${
-                            eventData.eventType === 'workshop' 
-                              ? 'border-primary bg-primary/10 dark:bg-primary/20' 
-                              : 'border-surface-200 dark:border-surface-700'
-                          } flex flex-col items-center justify-center gap-2 transition-colors`}
-                        >
-                          <GraduationCapIcon className={`w-6 h-6 ${
-                            eventData.eventType === 'workshop' ? 'text-primary' : 'text-surface-500 dark:text-surface-400'
-                          }`} />
-                          <span className={eventData.eventType === 'workshop' ? 'font-medium' : ''}>Workshop</span>
-                        </button>
-                        
-                        <button
-                          type="button"
-                          onClick={() => setEventData(prev => ({ ...prev, eventType: 'networking' }))}
-                          className={`p-4 rounded-lg border ${
-                            eventData.eventType === 'networking' 
-                              ? 'border-primary bg-primary/10 dark:bg-primary/20' 
-                              : 'border-surface-200 dark:border-surface-700'
-                          } flex flex-col items-center justify-center gap-2 transition-colors`}
-                        >
-                          <UsersIcon className={`w-6 h-6 ${
-                            eventData.eventType === 'networking' ? 'text-primary' : 'text-surface-500 dark:text-surface-400'
-                          }`} />
-                          <span className={eventData.eventType === 'networking' ? 'font-medium' : ''}>Networking</span>
-                        </button>
-                        
-                        <button
-                          type="button"
-                          onClick={() => setEventData(prev => ({ ...prev, eventType: 'celebration' }))}
-                          className={`p-4 rounded-lg border ${
-                            eventData.eventType === 'celebration' 
-                              ? 'border-primary bg-primary/10 dark:bg-primary/20' 
-                              : 'border-surface-200 dark:border-surface-700'
-                          } flex flex-col items-center justify-center gap-2 transition-colors`}
-                        >
-                          <PartyPopperIcon className={`w-6 h-6 ${
-                            eventData.eventType === 'celebration' ? 'text-primary' : 'text-surface-500 dark:text-surface-400'
-                          }`} />
-                          <span className={eventData.eventType === 'celebration' ? 'font-medium' : ''}>Celebration</span>
-                        </button>
-                      </div>
-                      {errors.eventType && (
-                        <p className="mt-1 text-sm text-red-500">{errors.eventType}</p>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <label htmlFor="location" className="label">Location</label>
-                      <div className="relative">
-                        <MapPinIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-500 dark:text-surface-400" />
-                        <input
-                          type="text"
-                          id="location"
-                          name="location"
-                          value={eventData.location}
-                          onChange={handleChange}
-                          placeholder="Enter event location (venue or online)"
-                          className={`input pl-10 ${errors.location ? 'border-red-500 dark:border-red-500' : ''}`}
-                        />
-                      </div>
-                      {errors.location && (
-                        <p className="mt-1 text-sm text-red-500">{errors.location}</p>
-                      )}
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label htmlFor="startDate" className="label">Start Date & Time</label>
-                        <div className="relative">
-                          <ClockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-500 dark:text-surface-400" />
-                          <input
-                            type="datetime-local"
-                            id="startDate"
-                            name="startDate"
-                            value={eventData.startDate}
-                            onChange={handleChange}
-                            className={`input pl-10 ${errors.startDate ? 'border-red-500 dark:border-red-500' : ''}`}
-                          />
-                        </div>
-                        {errors.startDate && (
-                          <p className="mt-1 text-sm text-red-500">{errors.startDate}</p>
-                        )}
-                      </div>
-                      
-                      <div>
-                        <label htmlFor="endDate" className="label">End Date & Time</label>
-                        <div className="relative">
-                          <ClockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-500 dark:text-surface-400" />
-                          <input
-                            type="datetime-local"
-                            id="endDate"
-                            name="endDate"
-                            value={eventData.endDate}
-                            onChange={handleChange}
-                            className={`input pl-10 ${errors.endDate ? 'border-red-500 dark:border-red-500' : ''}`}
-                          />
-                        </div>
-                        {errors.endDate && (
-                          <p className="mt-1 text-sm text-red-500">{errors.endDate}</p>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="timezone" className="label">Timezone</label>
-                      <select
-                        id="timezone"
-                        name="timezone"
-                        value={eventData.timezone}
-                        onChange={handleChange}
-                        className="input"
-                      >
-                        <option value="UTC">UTC (Coordinated Universal Time)</option>
-                        <option value="EST">EST (Eastern Standard Time)</option>
-                        <option value="CST">CST (Central Standard Time)</option>
-                        <option value="MST">MST (Mountain Standard Time)</option>
-                        <option value="PST">PST (Pacific Standard Time)</option>
-                        <option value="IST">IST (Indian Standard Time)</option>
-                        <option value="GMT">GMT (Greenwich Mean Time)</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
-              </form>
-              
-              {/* Modal Footer */}
-              <div className="p-6 border-t border-surface-200 dark:border-surface-700 flex justify-between">
-                {formStep === 1 ? (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => setIsCreatingEvent(false)}
-                      className="btn btn-outline"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleNextStep}
-                      className="btn btn-primary"
-                    >
-                      Next Step
-                      <ArrowRightIcon className="w-4 h-4 ml-2" />
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      onClick={handlePrevStep}
-                      className="btn btn-outline"
-                    >
-                      <ArrowLeftIcon className="w-4 h-4 mr-2" />
-                      Back
-                    </button>
-                    <button
-                      type="submit"
-                      className="btn btn-primary"
-                    >
-                      Create Event
-                      <CheckIcon className="w-4 h-4 ml-2" />
-                    </button>
-                  </>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

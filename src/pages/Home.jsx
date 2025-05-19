@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import { getIcon } from '../utils/iconUtils';
 import MainFeature from '../components/MainFeature';
 
@@ -8,6 +9,7 @@ const Home = () => {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   // Sample data for demonstration
+  const navigate = useNavigate();
   const [events, setEvents] = useState([
     {
       id: '1',
@@ -74,7 +76,7 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+              onClick={() => navigate('/create-event')}
               EventFlux
             </h1>
             <p className="text-lg md:text-xl opacity-90 mb-8">
@@ -108,7 +110,7 @@ const Home = () => {
             <path 
               fill="currentColor" 
               fillOpacity="1" 
-              className="text-surface-50 dark:text-surface-900"
+                onClick={() => navigate('/create-event')}
               d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"
             ></path>
           </svg>
