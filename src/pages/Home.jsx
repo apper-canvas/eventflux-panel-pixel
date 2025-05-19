@@ -79,7 +79,6 @@ const Home = () => {
             <h1 
               onClick={() => navigate('/create-event')}
               className="text-4xl md:text-5xl font-bold mb-4 cursor-pointer hover:underline">EventFlux</h1>
-            </h1>
             <p className="text-lg md:text-xl opacity-90 mb-8">
               Efficiently organize and manage events from creation to completion
             </p>
