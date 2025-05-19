@@ -255,7 +255,7 @@ const MainFeature = ({ onEventCreated, isCreatingEvent, setIsCreatingEvent }) =>
       {/* Create Event Modal */}
       <AnimatePresence>
         {isCreatingEvent && (
-            initial={{ opacity: 0 }} 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
