@@ -84,9 +84,10 @@ const Home = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={() => setIsCreatingEvent(true)}
                 className="btn bg-white text-primary hover:bg-surface-100 px-6 py-3"
               >
-                <PlusIcon className="w-5 h-5 mr-2" />
+                <PlusIcon className="w-5 h-5 mr-2" /> 
                 Create New Event
               </motion.button>
               <motion.button
@@ -261,7 +262,11 @@ const Home = () => {
                 <p className="text-surface-500 dark:text-surface-400 max-w-md">
                   There are no events matching your current filter. Try changing your filter or create a new event.
                 </p>
-                <button className="btn btn-primary mt-4 flex items-center">
+                <button 
+                  onClick={() => setIsCreatingEvent(true)}
+                  type="button"
+                  className="btn btn-primary mt-4 flex items-center"
+                >
                   <PlusIcon className="w-4 h-4 mr-2" />
                   Create New Event
                 </button>

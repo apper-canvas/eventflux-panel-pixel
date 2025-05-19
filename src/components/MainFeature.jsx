@@ -531,8 +531,7 @@ const MainFeature = ({ onEventCreated }) => {
                       Back
                     </button>
                     <button
-                      type="button"
-                      onClick={handleSubmit}
+                      type="submit"
                       className="btn btn-primary"
                     >
                       Create Event
