@@ -76,8 +76,9 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="max-w-3xl mx-auto text-center"
           >
+            <h1 
               onClick={() => navigate('/create-event')}
-              EventFlux
+              className="text-4xl md:text-5xl font-bold mb-4 cursor-pointer hover:underline">EventFlux</h1>
             </h1>
             <p className="text-lg md:text-xl opacity-90 mb-8">
               Efficiently organize and manage events from creation to completion
@@ -110,7 +111,6 @@ const Home = () => {
             <path 
               fill="currentColor" 
               fillOpacity="1" 
-                onClick={() => navigate('/create-event')}
               d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"
             ></path>
           </svg>
