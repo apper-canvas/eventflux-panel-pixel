@@ -6,7 +6,7 @@ import MainFeature from '../components/MainFeature';
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState('upcoming');
-  
+  const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   // Sample data for demonstration
   const [events, setEvents] = useState([
     {
@@ -172,6 +172,8 @@ const Home = () => {
 
         {/* Event Management Feature */}
         <MainFeature 
+          isCreatingEvent={isCreatingEvent}
+          setIsCreatingEvent={setIsCreatingEvent}
           onEventCreated={(newEvent) => {
             setEvents([...events, { ...newEvent, id: Date.now().toString(), status: 'upcoming' }]);
           }}

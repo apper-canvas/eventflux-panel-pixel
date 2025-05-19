@@ -4,9 +4,9 @@ import { toast } from 'react-toastify';
 import { format, addDays } from 'date-fns';
 import { getIcon } from '../utils/iconUtils';
 
-const MainFeature = ({ onEventCreated }) => {
+const MainFeature = ({ onEventCreated, isCreatingEvent, setIsCreatingEvent }) => {
   // Event form state
-  const [isCreatingEvent, setIsCreatingEvent] = useState(false);
+  const [formCreatingState, setFormCreatingState] = useState(isCreatingEvent || false);
   const [formStep, setFormStep] = useState(1);
   
   // Form data state
@@ -95,7 +95,8 @@ const MainFeature = ({ onEventCreated }) => {
       
       // Reset form state
       setFormStep(1);
-      setIsCreatingEvent(false);
+      setFormCreatingState(false);
+      setIsCreatingEvent(false); // Update parent state
     }
   };
   
@@ -103,11 +104,12 @@ const MainFeature = ({ onEventCreated }) => {
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape' && isCreatingEvent) {
+        setFormCreatingState(false);
         setIsCreatingEvent(false);
       }
     };
     
-    window.addEventListener('keydown', handleEscape);
+    window.addEventListener('keydown', handleEscape); 
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isCreatingEvent]);
   
@@ -249,11 +251,11 @@ const MainFeature = ({ onEventCreated }) => {
           </div>
         </div>
       </div>
-      
+      {/* Create Event Modal - using parent state via props */}
       {/* Create Event Modal */}
       <AnimatePresence>
         {isCreatingEvent && (
-          <motion.div
+            initial={{ opacity: 0 }} 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
